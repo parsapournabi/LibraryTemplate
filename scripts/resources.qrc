@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/javascript">
+        <file>ModulteTest.js</file>
+    </qresource>
+</RCC>

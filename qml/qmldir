@@ -1,0 +1,3 @@
+module com.wearily.@MODULE@
+@MODULE@COMPONENT 1.0 @MODULE@COMPONENT.qml
+typeinfo plugins.qmltypes

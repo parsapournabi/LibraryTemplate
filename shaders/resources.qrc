@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/shaders">
+        <file>ModuleTest.frag</file>
+    </qresource>
+</RCC>

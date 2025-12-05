@@ -1,0 +1,12 @@
+{
+    "module": "com.wearily.@MODULE@",
+    "version": "1.0",
+    "classes": [
+        {
+            "name": "@MODULE@COMPONENT",
+            "extends": "QQuick.Item",
+            "file": "@MODULE@COMPONENT.qml",
+            "decription": "@MODULE@COMPONENT@DESC."
+        }
+    ]
+}
