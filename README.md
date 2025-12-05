@@ -77,11 +77,12 @@ sudo ./install.sh [INSTALL_PREFIX]
 
 
 > [!NOTE]
-> Usually the `INSTALL_PREFIX` on linux is: `/usr/local/...`
+> Usually the `INSTALL_PREFIX` on linux is: `/usr/local/...`.
 
 
 > [!NOTE]
 > You can pass custom `INSTALL_PREFIX` like below.
+
 
 </details>
 
@@ -100,7 +101,8 @@ cmake --install .
 
 
 > [!NOTE]
-> Usually the `CMAKE_INSTALL_PREFIX` on windows is: `C:/Program Files/WeaChart/`
+> Usually the `CMAKE_INSTALL_PREFIX` on windows is: `C:/Program Files/WeaChart/`.
+
 
 > [!NOTE]
 > You can pass custom `CMAKE_INSTALL_PREFIX` like below.

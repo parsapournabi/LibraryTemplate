@@ -85,3 +85,4 @@ CMakeLists.txt.user*
 *build*
 *BUILD*
 .env
+.idea/*
