@@ -125,7 +125,7 @@ install(EXPORT ${MODULE_NAME}Targets
 if(${MODULE_NAME}_WITH_QML)
     set(${MODULE_NAME}_QML_DEST "${${MODULE_NAME}_QML_INSTALL_DEST}/com/wearily/${MODULE_NAME}")
     install(DIRECTORY qml/com/wearily/${MODULE_NAME}/
-        DESTINATION ${${MODULE_NANE}_QML_DEST}
+        DESTINATION ${${MODULE_NAME}_QML_DEST}
         FILES_MATCHING PATTERN "*.qml" PATTERN "qmldir"
     )
 endif()
