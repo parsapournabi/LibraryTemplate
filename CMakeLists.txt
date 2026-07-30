@@ -34,12 +34,28 @@ set(${MODULE_NAME}_SHARE_INSTALL_DEST ${CMAKE_INSTALL_PREFIX}/share)
 # Optional QML support
 option(${MODULE_NAME}_WITH_QML "Enable QML modules" OFF)
 if(${MODULE_NAME}_WITH_QML)
+    # Importing base dependencies
     find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Qml Quick)
     find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Qml Quick)
 
     # Generating config.h form config.h.in (WeaQuick_QML_IMPORT_PATH) must be assign from CMake.
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/${MODULE_NAME}_config.h.in
                 ${CMAKE_CURRENT_SOURCE_DIR}/include/${MODULE_NAME}/${MODULE_NAME}_config.h)
+
+    # Adding QML files into the QML_IMPORT_PATH automatically
+    # Directories where Qt Creator can find QML files.
+    # (Not needed for builds, but makes Qt Creator code completion happy.)
+    list(APPEND ${MODULE_NAME}_QML_IMPORTS "${${MODULE_NAME}_QML_INSTALL_DEST}")
+    list(APPEND ${MODULE_NAME}_QML_IMPORTS "${CMAKE_CURRENT_SOURCE_DIR}/qml/")
+
+    # Prevent adding duplicate values at each run of CMake.
+    list(REMOVE_DUPLICATES ${MODULE_NAME}_QML_IMPORTS)
+
+    # The variable is cached in ${BUILD_DIR}/CMakeCache.txt. We need FORCE to
+    # change it there immediately. Also, add a comment to the cache file.
+    set(QML_IMPORT_PATH "${${MODULE_NAME}_QML_IMPORTS}"
+        CACHE STRING "${MODULE_NAME} QML Imports Paths for Qt Creator"
+        FORCE)
 endif()
 
 # ============================
@@ -176,7 +192,7 @@ message(STATUS
    "\nMODULE_SHADERS: ${MODULE_SHADERS}"
    "\nMODULE_RESOURCES: ${MODULE_RESOURCES}"
    "\nMODULE_SHARE_INSTALL_DIR: ${${MODULE_NAME}_SHARE_INSTALL_DEST}"
-   "\nWITH_QML: ${${MODULE_NAME_}_WITH_QML}"
+   "\nWITH_QML: ${${MODULE_NAME}_WITH_QML}"
    "\nQML_DEST: ${${MODULE_NAME}_QML_INSTALL_DEST}"
    "\nQML_DEST_INSTALL: ${${MODULE_NAME}_QML_DEST}"
 )
