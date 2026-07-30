@@ -1,254 +1,358 @@
-# @MODULE_NAME@ 
+# LibraryTemplate
 
-@MODULE_DESC@
+A modern **Qt5 / Qt6** CMake template for building reusable C++ libraries.
+
+This repository provides a ready-to-use project structure for creating Qt-based libraries with support for:
+
+- Modern CMake
+- Qt 5 / Qt 6
+- Cross-platform (Windows / Linux / macOS)
+- Shared libraries (.dll/.so/.dylib)
+- QML Modules
+- GLSL Shaders
+- Resources (.qrc)
+- Automatic installation
+- CMake package export
+- `find_package()` support
+- `add_subdirectory()` support
+
+The goal of this template is to eliminate repetitive setup work so every new library starts from the same clean architecture.
 
 ---
 
-## File Tree
-<details>
-  <summary>See file tree</summary>
+# Features
 
-```bash
+- Modern CMake (3.16+)
+- Qt5 / Qt6 compatible
+- Automatic Qt MOC/UIC/RCC
+- Optional QML support
+- Automatic QML import path configuration
+- Automatic resource (.qrc) generation
+- Automatic qmldir generation
+- Automatic recursive file discovery
+- Install & Export support
+- Namespace targets
+- Cross-platform
+- Git ready
+- Formatting configuration (AStyle / Qt Creator)
+
+---
+
+# Project Structure
+
+```
 .
-├── cmake
-│   └── @MODULE_NAME@Config.cmake.in
-├── CMakeLists.txt
-├── include
-│   └── @MODULE_NAME@/*.h
-├── src
-│   └── *.cpp
-├── resources
-│   └── *.qrc
-├── qml
-│   └── *.qml
-├── shaders
-│   └── *.frag / *.vert
-├── examples
-│   ├── CMakeLists.txt
-│   └── main.cpp
-├── tests
-│   ├── CMakeLists.txt
-│   └── test_main.cpp
-├── README.md
-├── install.sh
-└── uninstall.sh
+├── cmake/
+├── config/
+├── docs/
+├── examples/
+├── include/
+├── qml/
+├── scripts/
+├── shaders/
+├── share/
+├── src/
+├── tests/
+└── resources.qrc
 ```
-</details>
 
 ---
 
-## Table of Contents
-1. [Requirements](#requirements)
-2. [Build and Installation](#build-and-installation)
-3. [Usage and Importing](#usage-and-importing)
-4. [Features](#features)
-5. [Example](#example)
-6. [Additional Notes](#additional-notes)
-7. [Information](#information)
-8. [TODO](#todo)
----
+# Getting Started
 
-## Requirements
-- C++: Minimum C++11 (Recommended C++17)
-- Qt: 5.15+ (Supports Qt6)
-- OpenGL: Required version depends on the module
-- CMake: 3.14+
-- OS: Cross-platform (Linux, Windows, macOS)
----
-## Build and Installation
-This project uses **CMake** as its build system and is cross-platform.
+Clone the template
 
-### 1. Clone the Repository
 ```bash
-git clone <repository_url>
-cd <repository_root>/@MODULE_NAME@
+git clone https://github.com/parsapournabi/LibraryTemplate.git MyLibrary
 ```
 
-### 2. Build Instruction
+Rename the module.
 
-<details><summary><h4> Linux </h4></summary> 
+The template uses **Module** as a placeholder.
 
-Make sure you have **cmake** and a **C++ compiler (gcc/g++)**
+Run:
 
 ```bash
-chmod +x install.sh
-sudo ./install.sh [INSTALL_PREFIX]
+scripts/rename-all.sh \
+    --paths . \
+    --current Module \
+    --target MyLibrary
 ```
 
+This automatically renames:
 
-> [!NOTE]
-> Usually the `INSTALL_PREFIX` on linux is: `/usr/local/...`.
+- directories
+- filenames
+- occurrences inside files
 
+---
 
-> [!NOTE]
-> You can pass custom `INSTALL_PREFIX` like below.
-
-
-</details>
-
-<details><summary><h4> Windows </h4></summary>
-
-Make sure you have **CMake** and **(MinGW or MSVC)**  compiler installed.
-Run `cmd` as Adminstrator, then do like below:
+Generate qmldir
 
 ```bash
-mkdir BUILD
-cd BUILD
-cmake .. -G "MinGW Makefiles" -DCMAKE_INSTALL_PREFIX="C:/My/Custom/Path"
-cmake --build . --config Release
+scripts/update-qml-module.sh \
+    --dir qml \
+    --module com.wearily.MyLibrary \
+    --version 1.0
+```
+
+This automatically generates the **qmldir** file by scanning all QML and JavaScript files recursively.
+
+---
+
+Generate resources.qrc
+
+```bash
+scripts/update-qrc.sh
+```
+
+This automatically scans:
+
+- qml/
+- shaders/
+
+and updates
+
+```
+resources.qrc
+```
+
+Additional directories can also be specified.
+
+---
+
+Done.
+
+The project is now ready to build.
+
+---
+
+# Building
+
+```bash
+mkdir build
+
+cd build
+
+cmake ..
+
+cmake --build .
+```
+
+---
+
+# Optional Features
+
+Enable QML support
+
+```bash
+cmake .. -DMyLibrary_WITH_QML=ON
+```
+
+Build examples
+
+```bash
+cmake .. -DMyLibrary_BUILD_EXAMPLES=ON
+```
+
+Build tests
+
+```bash
+cmake .. -DMyLibrary_BUILD_TESTS=ON
+```
+
+---
+
+# Installation
+
+Install library
+
+```bash
 cmake --install .
 ```
 
+The following files will be installed automatically:
 
-> [!NOTE]
-> Usually the `CMAKE_INSTALL_PREFIX` on windows is: `C:/Program Files/WeaChart/`.
+- shared library
+- headers
+- CMake package
+- QML module (optional)
+- share/ resources
 
+---
 
-> [!NOTE]
-> You can pass custom `CMAKE_INSTALL_PREFIX` like below.
+# Using as Subdirectory
 
-```bash
-...
-cmake .. -DBUILD_EXAMPLE=OFF -G "MinGW Makefiles" -DCMAKE_INSTALL_PREFIX="C:/My/Custom/Path/WeaChart"
-...
-```
-</details>
+```cmake
+add_subdirectory(3rdParty/MyLibrary)
 
-<details><summary><h4> Using the source code </h4></summary>
-
-To avoid installing the library and using it via source code follow these steps:
-1. Create directory named `libs/@MODULE@` in your **PROJECT_SOURCE_ROOT**.
-2. Copy the `include`, `qml`, `shaders`, `src` and `resources.qrc` to your  **PROJECT_SOURCE_ROOT/libs/@MODULE@**
-3. Add `libs/@MODULE@` directory using **Add Existing Directory**.
-4. Add `libs/@MODULE@/include` to your project **INCLUDEPATH**.
-5. To import **@MODULE@ Qml types & components**, follow like below:
-
-```qml
-// Your .qml file
-import com.wearily.@MODULE_NAME@ 1.0 // Importing registered components
-
-```
-</details>
-
-## Usage and Importing
-
-> [!NOTE]
-> If after assigning **QML_IMPORT_PATH** Components were still **Unknown**, restart Qt Creator application and then it works :)
-
-<details><summary><h3> qmake </h3></summary>
-
-Here is an example of usage **WeaChart** on **.pro** application:
-
-```qmake
-QT += quick core opengl
-CONFIG += c++17
-
-...
-
-# The path will comes from INSTALL_PREFIX at installation stage.
-# You can print "WeaChart_QML_IMPORT_PATH" constant on main.cpp to see which path is on your system.
-QML_IMPORT_PATH = /usr/local/share/qml/ # Change it with your installation path.
-... 
-
-unix:!macx: LIBS += -L/usr/local/lib64 -lWeaChart # Change it with your installation path.
-unix:!macx: INCLUDEPATH += /usr/local/include # Change it with your installation path.
-
-```
-</details>
-
-<details><summary><h3> CMake </h3></summary>
-
-Here is an example of usage **WeaChart** on **CMakeLists.txt**.
-
-```CMake
-
-cmake_minimum_required(VERSION 3.14)
-project(myProject VERSION 0.1 LANGUAGES CXX)
-
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Quick OpenGL)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Quick OpenGL)
-# Note: If you installed on specific location path make sure you specify here like: find_package(WeaChart PATHS "my/custom/path/" REQUIRED)
-find_package(WeaChart REQUIRED) 
-
-# Note: Also its same like above Note.
-# Optional.
-# You can print "WeaChart_QML_IMPORT_PATH" constant on main.cpp to see which path is on your system.
-set(QML_IMPORT_PATH /usr/local/share/qml CACHE STRING "" FORCE)
-
-add_executable(myProject
-        main.cpp
-        qml.qrc
+target_link_libraries(MyApplication
+    PRIVATE
+        QtWea::MyLibrary
 )
+```
 
-target_link_libraries(myProject PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick WeaChart::WeaChart)
+No additional include directories are required.
+
+Everything is exported through the library target.
+
+---
+
+# Using with find_package()
+
+Install the library first.
+
+Then
+
+```cmake
+find_package(MyLibrary REQUIRED)
+
+target_link_libraries(MyApplication
+    PRIVATE
+        QtWea::MyLibrary # QtWea is MODULE_NAMESPACE (You can modify it in .cmake.conf)
+)
+```
+
+---
+
+# QML Modules
+
+When QML support is enabled, the template automatically:
+
+- configures QML import paths for Qt Creator
+- installs the QML module
+- supports recursive qmldir generation
+- supports JavaScript modules
+- supports plugins.qmltypes
+
+Module example
 
 ```
-</details>
-
-## Features
-- Feature 1 (describe module feature)
-- Feature 2 (optional)
-- Supports QML/Plugin integration (if applicable)
-- Configurable options exposed via header or QML
-
-## Example
-Import all files and directories instead **example** directory to your project.
-
-### Quick Start
-
-<details><summary> main.cpp </summary>
-
-```cpp
-#include <QGuiApplication>
-#include <QQmlApplicationEngine>
-// Include your module headers
-#include <@MODULE_NAME@/SomeClass.h>
-
-int main(int argc, char** argv) {
-    QGuiApplication app(argc, argv);
-    QQmlApplicationEngine engine;
-
-    // optional: register types
-    SomeClass::registerMetaTypes(&engine);
-
-    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
-    return app.exec();
-}
-
+qml/
+└── com/
+    └── wearily/
+        └── MyLibrary/
 ```
-</details>
 
-<details><summary> main.qml </summary>
+Import:
 
 ```qml
-import QtQuick 2.12
-import com.wearily.@MODULE_NAME@ 1.0
+import com.wearily.MyLibrary 1.0
+```
 
-Window {
-    visible: true
-    width: 400
-    height: 400
-    title: "@MODULE_NAME@ Example"
-}
+> [!TIP]
+> Replace `wearily` name with your `organization name`.
+
+---
+
+# Resources
+
+The template uses a single root
 
 ```
-</details>
+resources.qrc
+```
 
-## Additional Notes
-- Customizable options depend on module
-- Supports cross-platform development
-- Optimized for performance if applicable
+Resources are generated automatically by
 
-## Information
-- Official documentation: TBD
-- Source code comments: see `include/@MODULE_NAME@/*.h`
+```
+update-qrc.sh
+```
 
-## TODO
-- [ ] Some todo content
+Supported directories include
+
+- qml/
+- shaders/
+- share/
+
+Additional directories can easily be added.
+
+---
+
+# Scripts
+
+## rename-all.sh
+
+Recursively renames
+
+- directories
+- filenames
+- file contents
+
+Useful when creating a new library from the template.
+
+---
+
+## update-qml-module.sh
+
+Automatically generates
+
+```
+qmldir
+```
+
+by scanning
+
+- QML files
+- JavaScript files
+
+Supports recursive directories.
+
+---
+
+## update-qrc.sh
+
+Automatically regenerates
+
+```
+resources.qrc
+```
+
+from project resources.
+
+---
+
+# Recommended Workflow
+
+Clone template
+
+↓
+
+Rename Module
+
+↓
+
+Generate qmldir
+
+↓
+
+Generate resources.qrc
+
+↓
+
+Build
+
+↓
+
+Install
+
+Everything else is handled automatically.
+
+---
+
+# Requirements
+
+- CMake 3.16+
+- Qt 5.15+
+- Qt 6.x
+- C++17
+
+---
+
+# License
+
+Choose any license appropriate for your project.
+
+---
+
+Created with ❤️ for reusable Qt libraries.
