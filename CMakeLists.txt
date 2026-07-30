@@ -45,11 +45,11 @@ endif()
 # ============================
 # Files
 # ============================
-file(GLOB_RECURSE MODULE_HEADERS "include/*.h")
-file(GLOB_RECURSE MODULE_SOURCES "src/*.cpp" "src/*.h")
-file(GLOB_RECURSE MODULE_SCRIPTS "scripts/*.js")
-file(GLOB_RECURSE MODULE_RESOURCES "*.qrc" "qml/*.qrc" "share/*.qrc" "shaders/*.qrc" "scripts/*.qrc")
-file(GLOB_RECURSE MODULE_SHADRES "shaders/*.glsl" "shaders/*.vert" "shaders/*.frag")
+file(GLOB_RECURSE MODULE_HEADERS CONFIGURE_DEPENDS "include/*.h")
+file(GLOB_RECURSE MODULE_SOURCES CONFIGURE_DEPENDS "src/*.cpp" "src/*.h")
+file(GLOB_RECURSE MODULE_SCRIPTS CONFIGURE_DEPENDS "scripts/*.js")
+file(GLOB_RECURSE MODULE_RESOURCES CONFIGURE_DEPENDS "*.qrc" "qml/*.qrc" "share/*.qrc" "shaders/*.qrc" "scripts/*.qrc")
+file(GLOB_RECURSE MODULE_SHADERS CONFIGURE_DEPENDS "shaders/*.glsl" "shaders/*.vert" "shaders/*.frag")
 
 add_library(${MODULE_NAME} SHARED
     ${MODULE_HEADERS}
