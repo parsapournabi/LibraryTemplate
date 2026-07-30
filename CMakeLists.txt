@@ -59,6 +59,14 @@ add_library(${MODULE_NAME} SHARED
     ${MODULE_RESOURCES}
 )
 
+# This ALIAS Helps using Module as Subdirectory and linking it by:
+#   `target_link_libraries(Project PRIVATE ${MODULE_NAMESPACE}::${MODULE_NAME})`
+add_library(
+    ${MODULE_NAMESPACE}::${MODULE_NAME}
+    ALIAS
+    ${MODULE_NAME}
+)
+
 target_include_directories(${MODULE_NAME}
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
