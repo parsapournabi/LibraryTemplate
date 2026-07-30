@@ -37,7 +37,7 @@ endif()
 file(GLOB_RECURSE MODULE_HEADERS "include/*.h")
 file(GLOB_RECURSE MODULE_SOURCES "src/*.cpp" "src/*.h")
 file(GLOB_RECURSE MODULE_SCRIPTS "scripts/*.js")
-file(GLOB_RECURSE MODULE_RESOURCES "qml/*.qrc" "shaders/*.qrc" "scripts/*.qrc")
+file(GLOB_RECURSE MODULE_RESOURCES "*.qrc" "qml/*.qrc" "shaders/*.qrc" "scripts/*.qrc")
 file(GLOB_RECURSE MODULE_SHADRES "shaders/*.glsl" "shaders/*.vert" "shaders/*.frag")
 
 add_library(${MODULE_NAME} SHARED
