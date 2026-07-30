@@ -101,6 +101,12 @@ endif()
 target_compile_definitions(${MODULE_NAME} PRIVATE ${MODULE_NAME}_EXPORT)
 
 # ============================
+# Meta & BUILD Automation
+# ============================
+include(cmake/CopyShare.cmake)
+copy_share(${MODULE_NAME})
+
+# ============================
 # Install
 # ============================
 include(CMakePackageConfigHelpers)
