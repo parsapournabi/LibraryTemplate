@@ -1,8 +1,8 @@
 <RCC>
     <qresource prefix="/">
-        <file>qml/ModuleTest.qml</file>
-        <file>qml/plugins.qmltypes</file>
-        <file>qml/qmldir</file>
+        <file>qml/com/wearily/Module/ModuleTest.qml</file>
+        <file>qml/com/wearily/Module/plugins.qmltypes</file>
+        <file>qml/com/wearily/Module/qmldir</file>
         <file>shaders/ModuleTest.frag</file>
     </qresource>
 </RCC>
