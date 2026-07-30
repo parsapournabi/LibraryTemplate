@@ -25,9 +25,15 @@ set(CMAKE_AUTOUIC ON)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
 
+# QML Install destinition
+set(${MODULE_NAME}_QML_INSTALL_DEST ${CMAKE_INSTALL_PREFIX}/qml)
+
+# Share Install destinition
+set(${MODULE_NAME}_SHARE_INSTALL_DEST ${CMAKE_INSTALL_PREFIX}/share)
+
 # Optional QML support
-option(WITH_QML "Enable QML modules" OFF)
-if(WITH_QML)
+option(${MODULE_NAME}_WITH_QML "Enable QML modules" OFF)
+if(${MODULE_NAME}_WITH_QML)
     find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Qml Quick)
 endif()
 
@@ -37,7 +43,7 @@ endif()
 file(GLOB_RECURSE MODULE_HEADERS "include/*.h")
 file(GLOB_RECURSE MODULE_SOURCES "src/*.cpp" "src/*.h")
 file(GLOB_RECURSE MODULE_SCRIPTS "scripts/*.js")
-file(GLOB_RECURSE MODULE_RESOURCES "*.qrc" "qml/*.qrc" "shaders/*.qrc" "scripts/*.qrc")
+file(GLOB_RECURSE MODULE_RESOURCES "*.qrc" "qml/*.qrc" "share/*.qrc" "shaders/*.qrc" "scripts/*.qrc")
 file(GLOB_RECURSE MODULE_SHADRES "shaders/*.glsl" "shaders/*.vert" "shaders/*.frag")
 
 add_library(${MODULE_NAME} SHARED
@@ -58,7 +64,7 @@ target_include_directories(${MODULE_NAME}
 
 target_link_libraries(${MODULE_NAME} PUBLIC Qt${QT_VERSION_MAJOR}::Core)
 
-if(WITH_QML)
+if(${MODULE_NAME}_WITH_QML)
     target_link_libraries(${MODULE_NAME} PUBLIC Qt${QT_VERSION_MAJOR}::Qml Qt${QT_VERSION_MAJOR}::Quick)
 endif()
 
@@ -102,27 +108,35 @@ install(EXPORT ${MODULE_NAME}Targets
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${MODULE_NAME}
 )
 
-# Install QML files (if exist)
-if(WITH_QML)
-    set(QML_DEST "${CMAKE_INSTALL_PREFIX}/share/qml/com/wearily/${MODULE_NAME}")
-    install(DIRECTORY qml/
-        DESTINATION ${QML_DEST}
+# Install QML files (if exists)
+if(${MODULE_NAME}_WITH_QML)
+    set(${MODULE_NAME}_QML_DEST "${${MODULE_NAME}_QML_INSTALL_DEST}/com/wearily/${MODULE_NAME}")
+    install(DIRECTORY qml/com/wearily/${MODULE_NAME}/
+        DESTINATION ${${MODULE_NANE}_QML_DEST}
         FILES_MATCHING PATTERN "*.qml" PATTERN "qmldir"
     )
 endif()
+
+# Install shares
+set(${MODULE_NAME}_SHARE_DEST "${${MODULE_NAME}_SHARE_INSTALL_DEST}")
+install(DIRECTORY share/
+    DESTINATION ${${MODULE_NAME}_SHARE_DEST}
+    FILES_MATCHING PATTERN "*"
+)
+
 # Removing Duplicate WeaChart directories.
 install(DIRECTORY ${CMAKE_INSTALL_INCLUDEDIR}/${MODULE_NAME} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # ============================
 # Examples & Tests
 # ============================
-option(BUILD_${MODULE_NAME}_EXAMPLES "Build examples" ON)
-if(BUILD_${MODULE_NAME}_EXAMPLES)
+option(${MODULE_NAME}_BUILD_EXAMPLES "Build examples" OFF)
+if(${MODULE_NAME}_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
-option(BUILD_${MODULE_NAME}_TESTS "Build tests" ON)
-if(BUILD_${MODULE_NAME}_TESTS)
+option(${MODULE_NAME}_BUILD_TESTS "Build tests" OFF)
+if(${MODULE_NAME}_BUILD_TESTS)
     enable_testing()
     add_subdirectory(tests)
 endif()
@@ -147,6 +161,8 @@ message(STATUS
    "\nMODULE_SCRIPTS: ${MODULE_SCRIPTS}"
    "\nMODULE_SHADERS: ${MODULE_SHADERS}"
    "\nMODULE_RESOURCES: ${MODULE_RESOURCES}"
-   "\nWITH_QML: ${WITH_QML}"
-   "\nQML_DEST: ${QML_DEST}"
+   "\nMODULE_SHARE_INSTALL_DIR: ${${MODULE_NAME}_SHARE_INSTALL_DEST}"
+   "\nWITH_QML: ${${MODULE_NAME_}_WITH_QML}"
+   "\nQML_DEST: ${${MODULE_NAME}_QML_INSTALL_DEST}"
+   "\nQML_DEST_INSTALL: ${${MODULE_NAME}_QML_DEST}"
 )
