@@ -1,8 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>ModuleTest.qml</file>
-        <file>plugins.qmltypes</file>
-        <file>qmldir</file>
-    </qresource>
-    <qresource prefix="/assets"/>
-</RCC>
