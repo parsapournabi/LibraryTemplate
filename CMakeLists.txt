@@ -34,7 +34,12 @@ set(${MODULE_NAME}_SHARE_INSTALL_DEST ${CMAKE_INSTALL_PREFIX}/share)
 # Optional QML support
 option(${MODULE_NAME}_WITH_QML "Enable QML modules" OFF)
 if(${MODULE_NAME}_WITH_QML)
+    find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Qml Quick)
     find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Qml Quick)
+
+    # Generating config.h form config.h.in (WeaQuick_QML_IMPORT_PATH) must be assign from CMake.
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/cmake/${MODULE_NAME}_config.h.in
+                ${CMAKE_CURRENT_SOURCE_DIR}/include/${MODULE_NAME}/${MODULE_NAME}_config.h)
 endif()
 
 # ============================
@@ -145,6 +150,7 @@ endif()
 # Also Important flags
 message(STATUS
    "CMakeAttributes: "
+   "\nCMAKE_INSTALL_DATADIR: ${CMAKE_INSTALL_DATADIR}"
    "\nCMAKE_INSTALL_PREFIX: ${CMAKE_INSTALL_PREFIX}"
    "\nCMAKE_INSTALL_BINDIR: ${CMAKE_INSTALL_BINDIR}"
    "\nCMAKE_INSTALL_LIBDIR: ${CMAKE_INSTALL_LIBDIR}"
