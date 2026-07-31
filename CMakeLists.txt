@@ -120,7 +120,10 @@ target_compile_definitions(${MODULE_NAME} PRIVATE ${MODULE_NAME}_EXPORT)
 # Meta & BUILD Automation
 # ============================
 include(cmake/CopyShare.cmake)
-copy_share(${MODULE_NAME})
+if (NOT DEVELOPMENT)
+    # This makes build directory clean in deploying mode
+    copy_share(${MODULE_NAME})
+endif()
 
 # ============================
 # Install
