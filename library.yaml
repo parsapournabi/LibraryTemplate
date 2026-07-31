@@ -1,0 +1,42 @@
+##########################################
+# Library Template Configuration
+##########################################
+
+template:
+  id: com.wearily.library-template
+  version: 1
+
+library:
+  name: Module
+  version: 1.0.0
+  namespace: Module
+
+qml:
+  uri: com.wearily.Module
+  version: 1.0
+  plugin: ModulePlugin
+
+resources:
+  library: Module_resources.qrc
+  shared: Module_share_resources.qrc
+
+paths:
+  include: include
+  source: src
+  qml: qml
+  shaders: shaders
+  share: share
+  docs: docs
+  examples: examples
+  tests: tests
+
+build:
+  qt_minimum: 5.15
+  qt_preferred: 6.9
+
+install:
+  export: ModuleTargets
+  config: ModuleConfig.cmake
+
+license:
+  spdx: MIT
