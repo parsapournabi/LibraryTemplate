@@ -5,6 +5,7 @@
 template:
   id: com.wearily.library-template
   version: 1
+  placeholder: Module
 
 library:
   name: Module
