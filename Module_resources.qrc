@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="/Module">
         <file>qml/com/wearily/Module/ModuleTest.qml</file>
         <file>qml/com/wearily/Module/plugins.qmltypes</file>
         <file>qml/com/wearily/Module/qmldir</file>
