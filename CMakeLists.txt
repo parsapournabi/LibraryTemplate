@@ -64,16 +64,32 @@ endif()
 file(GLOB_RECURSE MODULE_HEADERS CONFIGURE_DEPENDS "include/*.h")
 file(GLOB_RECURSE MODULE_SOURCES CONFIGURE_DEPENDS "src/*.cpp" "src/*.h")
 file(GLOB_RECURSE MODULE_SCRIPTS CONFIGURE_DEPENDS "scripts/*.js")
-file(GLOB_RECURSE MODULE_RESOURCES CONFIGURE_DEPENDS "*.qrc" "qml/*.qrc" "share/*.qrc" "shaders/*.qrc" "scripts/*.qrc")
 file(GLOB_RECURSE MODULE_SHADERS CONFIGURE_DEPENDS "shaders/*.glsl" "shaders/*.vert" "shaders/*.frag")
+
+# We don't want to include all library qrc! In this case only TWO QRC MUST BE EXISTS
+list(APPEND MODULE_RESOURCES ${MODULE_NAME}_resources.qrc)
+
+# Only built ${MODULE_NAME}_share_resources.qrc file for when DEVELOPMENT isn't active
+# This will helps reduce compile-time during `development`. (Because in share qrc we have much binaries files)
+# Note: To active DEVELOPMENT mode, Just add a CMake `option` with `DEVELOPMENT` name and `ON` value (IN YOUR CMAKE PROJECT. NOT HERE)
+if (NOT DEVELOPMENT)
+    list(APPEND MODULE_RESOURCES ${MODULE_NAME}_share_resources.qrc)
+endif()
 
 add_library(${MODULE_NAME} SHARED
     ${MODULE_HEADERS}
     ${MODULE_SOURCES}
     ${MODULE_SCRIPTS}
     ${MODULE_SHADERS}
+
+    # Fixed
     ${MODULE_RESOURCES}
 )
+
+# This macro helps to Force resources builds for deployment ( See `Q_INIT_RESOURCES` )
+if (DEVELOPMENT)
+    target_compile_definitions(${MODULE_NAME} PUBLIC ${MODULE_NAME}_DEVELOPMENT)
+endif()
 
 # This ALIAS Helps using Module as Subdirectory and linking it by:
 #   `target_link_libraries(Project PRIVATE ${MODULE_NAMESPACE}::${MODULE_NAME})`
