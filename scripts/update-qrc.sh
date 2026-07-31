@@ -6,6 +6,7 @@ set -euo pipefail
 # Defaults
 ###############################################################################
 
+MODULE_NAME=""
 QRC_FILE="resources.qrc"
 DIRECTORIES=("qml" "shaders")
 
@@ -24,6 +25,14 @@ Description:
 
 Options:
 
+    -m, --module <module-name>
+            Module/Library name referrer .cmake.conf
+
+            REQUIRED
+
+            example:
+                --module WeaQuick
+
     -d, --dirs <dir1> <dir2> ...
             Directories to scan.
             Default:
@@ -41,11 +50,14 @@ Options:
 Examples:
 
     ./scripts/update-qrc.sh
+        --module WeaQuick
 
     ./scripts/update-qrc.sh \
+        --module WeaQuick \
         --dirs qml shaders scripts
 
     ./scripts/update-qrc.sh \
+        --module WeaQuick \
         --dirs qml shaders \
         --qrc resources/resources.qrc
 
@@ -63,6 +75,17 @@ do
         -h|--help)
             show_help
             exit 0
+            ;;
+
+        -m|--module)
+            shift
+            if [[ $# -eq 0 || "$1" == -* ]]; then
+                echo "Error: --module requires a value."
+                exit 1
+            fi
+
+            MODULE_NAME="$1"
+            shift
             ;;
 
         -q|--qrc)
@@ -105,7 +128,7 @@ mkdir -p "$(dirname "$QRC_FILE")"
 
 {
 echo '<RCC>'
-echo '    <qresource prefix="/">'
+echo "    <qresource prefix=\"/${MODULE_NAME}\">"
 
 for dir in "${DIRECTORIES[@]}"
 do
