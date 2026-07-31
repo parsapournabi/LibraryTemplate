@@ -30,6 +30,15 @@ paths:
   examples: examples
   tests: tests
 
+# Features means the /scripts/*.sh, *.bat, *.py will not locate the features with `false` value.
+features:
+  qml: true
+  shaders: true
+  docs: true
+  examples: true
+  tests: true
+  install: true
+
 build:
   qt_minimum: 5.15
   qt_preferred: 6.9
@@ -40,3 +49,8 @@ install:
 
 license:
   spdx: MIT
+
+metadata:
+  author: Parsa Pournabi
+  organization: Wearily # In my case Wearily is my nickname :)
+  created: 2026-08-01
