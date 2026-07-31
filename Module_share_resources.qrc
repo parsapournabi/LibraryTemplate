@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/Module">
+        <file>share/audios/.gitkeep</file>
+        <file>share/fonts/.gitkeep</file>
+        <file>share/images/.gitkeep</file>
+    </qresource>
+</RCC>
