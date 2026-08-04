@@ -107,10 +107,38 @@ target_include_directories(${MODULE_NAME}
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
-target_link_libraries(${MODULE_NAME} PUBLIC Qt${QT_VERSION_MAJOR}::Core)
+target_link_libraries(${MODULE_NAME} PUBLIC
+    Qt${QT_VERSION_MAJOR}::Core
+)
 
 if(${MODULE_NAME}_WITH_QML)
-    target_link_libraries(${MODULE_NAME} PUBLIC Qt${QT_VERSION_MAJOR}::Qml Qt${QT_VERSION_MAJOR}::Quick)
+    target_link_libraries(${MODULE_NAME} PUBLIC
+        Qt${QT_VERSION_MAJOR}::Qml
+        Qt${QT_VERSION_MAJOR}::Quick
+    )
+endif()
+
+# Plugin
+if (${MODULE_NAME}_WITH_QML)
+    file(GLOB_RECURSE MODULE_PLUGIN_SOURCES CONFIGURE_DEPENDS "plugin/*.h" "plugin/*.cpp")
+    add_library(${MODULE_NAME}Plugin SHARED
+        ${MODULE_PLUGIN_SOURCES}
+    )
+
+    # Linking Main Library with Plugin app
+    target_link_libraries(${MODULE_NAME}Plugin PRIVATE
+        ${MODULE_NAMESPACE}::${MODULE_NAME}
+    )
+
+    # Renaming Plugin.dll.
+    string(TOLOWER "${MODULE_NAME}Plugin" MODULE_PLUGIN_LOWER)
+    set_target_properties(
+        ${MODULE_NAME}Plugin
+        PROPERTIES
+        PREFIX "" # removes `lib` keyword at first of `.dll` name
+        OUTPUT_NAME ${MODULE_PLUGIN_LOWER}
+    )
+
 endif()
 
 # Export definition
@@ -165,10 +193,21 @@ install(EXPORT ${MODULE_NAME}Targets
 # Install QML files (if exists)
 if(${MODULE_NAME}_WITH_QML)
     set(${MODULE_NAME}_QML_DEST "${${MODULE_NAME}_QML_INSTALL_DEST}/com/wearily/${MODULE_NAME}")
+
     install(DIRECTORY qml/com/wearily/${MODULE_NAME}/
         DESTINATION ${${MODULE_NAME}_QML_DEST}
-        FILES_MATCHING PATTERN "*.qml" PATTERN "qmldir"
+        FILES_MATCHING PATTERN "qmldir"
     )
+
+    # Instaling moduleplugin dynamic library/ static library file
+    install(TARGETS ${MODULE_NAME}Plugin
+        LIBRARY DESTINATION
+        ${${MODULE_NAME}_QML_INSTALL_DEST}/com/wearily/${MODULE_NAME}
+
+        RUNTIME DESTINATION
+        ${${MODULE_NAME}_QML_INSTALL_DEST}/com/wearily/${MODULE_NAME}
+    )
+
 endif()
 
 # Install shares
